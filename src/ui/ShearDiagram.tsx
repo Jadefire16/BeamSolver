@@ -1,10 +1,11 @@
-import { Sample} from "../domain/Types";
-import { Diagram} from "./Diagram";
+import { Sample } from "../domain/Types";
+import { Diagram } from "./Diagram";
 
-interface ShearDiagramProps {
+export interface ShearDiagramProps {
     data: Sample[];
+    width?: number;
 }
 
-export function ShearDiagram({ data }: ShearDiagramProps) {
-    return <Diagram data={data} title="Shear Diagram" yRange = {20}/>;
+export function ShearDiagram({ data, width }: ShearDiagramProps) {
+    return <Diagram data={data} title="Shear Diagram" yRange={20} width={width} />;
 }

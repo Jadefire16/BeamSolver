@@ -53,8 +53,8 @@ export function Diagram({
         .join(" ");
 
     return (
-        <div>
-            {title && <h3>{title}</h3>}
+        <div style={{ color: "var(--text-color)" }}>
+            {title && <h3 style={{ margin: "0 0 8px 0", fontSize: "1rem" }}>{title}</h3>}
             <svg width={width} height={height}>
                 {/* Axes */}
                 <line
@@ -62,14 +62,14 @@ export function Diagram({
                     y1={height / 2}
                     x2={width - padding}
                     y2={height / 2}
-                    stroke="#999"
+                    stroke="var(--border-color)"
                 />
                 <line
                     x1={padding}
                     y1={padding}
                     x2={padding}
                     y2={height - padding}
-                    stroke="#999"
+                    stroke="var(--border-color)"
                 />
 
                 {/* Zero reference line */}
@@ -79,8 +79,9 @@ export function Diagram({
                         y1={zeroY}
                         x2={width - padding}
                         y2={zeroY}
-                        stroke="#ccc"
+                        stroke="var(--border-color)"
                         strokeDasharray="4"
+                        opacity={0.5}
                     />
                 )}
 
@@ -88,7 +89,7 @@ export function Diagram({
                 <polyline
                     points={points}
                     fill="none"
-                    stroke="black"
+                    stroke="var(--graph-stroke)"
                     strokeWidth={2}
                 />
             </svg>
