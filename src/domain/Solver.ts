@@ -6,6 +6,13 @@ const SAMPLE_COUNT = 50; // likely should make this variable later to allow the 
 // No mutations
 // No UI coupling, pure logic
 
+/**
+ * Deflection Calculation Assumptions:
+ * 1. Constant EI = 1
+ * 2. Linear elastic beam
+ * 3. Small deflections
+ */
+
 // The solver will sample a beam, compute the internal forces acting on the beam and return arrays to plot.
 
 
@@ -95,29 +102,49 @@ function computeShear(
 
 // Simple moment computation function, tldr integral of shear
 function computeMoment(shear: Sample[]): Sample[] {
-    const moment: Sample[] = [];
-    let currentMoment = 0;
-
-    for (let i = 0; i < shear.length; i++) {
-        if(i > 0) {
-            const dx = shear[i].x - shear[i - 1].x;
-            currentMoment += shear[i - 1].value * dx;
-        }
-
-        moment.push({
-            x: shear[i].x,
-            value: currentMoment,
-        });
-    }
-    return moment;
+    return integrate(shear);
 }
 
-// This doesn't really calculate deflection, it's pretty flawed, but it's okay for now
-function computeDeflection(moment: Sample[]): Sample[]{
-    const SCALE = 0.001;
-    return moment.map((m) => ({
-        x: m.x,
-            value: m.value * SCALE,
+function integrate(samples: Sample[]): Sample[] {
+    const result: Sample[] = [];
+    let current = 0;
+
+    for (let i = 0; i < samples.length; i++) {
+        if (i > 0) {
+            const dx = samples[i].x - samples[i - 1].x;
+            current += samples[i - 1].value * dx;
+        }
+
+        result.push({ x: samples[i].x, value: current });
+    }
+
+    return result;
+}
+
+function enforceZeroEnds(deflection: Sample[]): Sample[] {
+    const start = deflection[0];
+    const end = deflection[deflection.length - 1];
+
+    return deflection.map(d => {
+        const t = (d.x - start.x) / (end.x - start.x);
+        const correction = start.value + t * (end.value - start.value);
+
+        return {
+            x: d.x,
+            value: d.value - correction,
+        };
+    });
+}
+
+function computeDeflection(moment: Sample[]): Sample[] {
+    const slope = integrate(moment);
+    const rawDeflection = integrate(slope);
+    const corrected = enforceZeroEnds(rawDeflection);
+
+    // Flip sign so downward deflection is negative (SVG-friendly)
+    return corrected.map(d => ({
+        x: d.x,
+        value: -d.value,
     }));
 }
 
