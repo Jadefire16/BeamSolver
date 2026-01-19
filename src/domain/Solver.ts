@@ -67,21 +67,27 @@ function computeShear(
     reactions: { support: any; force: number }[],
     positions: number[]
 ): Sample[] {
+    const tolerance = 1e-9; // Handle floating point inaccuracies at boundaries
     return positions.map((x) => {
         let shear = 0;
 
         reactions.forEach((r) => {
-           if (r.support.position <= x) {
+           if (r.support.position <= x + tolerance) {
                shear += r.force;
            }
         });
 
         beam.loads.forEach((load) => {
-            if (load.position <= x)
+            if (load.position <= x + tolerance)
             {
                 shear -= load.magnitude;
             }
         });
+
+        // Ensure we return exactly 0 when very close to it, preserving data integrity
+        if (Math.abs(shear) < 1e-12) {
+            shear = 0;
+        }
 
         return { x, value: shear };
     });

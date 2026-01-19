@@ -2,6 +2,7 @@ import {Beam, LoadType, SupportType} from "../domain/Types";
 import {prepareBeam} from "../domain/Beam";
 import {useMemo} from "react";
 import {solveBeam} from "../domain/Solver";
+import {ShearDiagram} from "../ui/ShearDiagram";
 
 const demoBeam: Beam = {
     length: 10,
@@ -54,7 +55,7 @@ export default function App() {
             </ul>
 
             <h2>Shear Samples (first 5)</h2>
-            <pre>{JSON.stringify(result.shearDiagram.slice(0, 5), null, 2)}</pre>
+            <ShearDiagram data={result.shearDiagram} />
 
             <h2>Moment Samples (first 5)</h2>
             <pre>{JSON.stringify(result.momentDiagram.slice(0, 5), null, 2)}</pre>
