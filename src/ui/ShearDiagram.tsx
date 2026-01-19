@@ -7,5 +7,14 @@ export interface ShearDiagramProps {
 }
 
 export function ShearDiagram({ data, width }: ShearDiagramProps) {
-    return <Diagram data={data} title="Shear Diagram" yRange={20} width={width} />;
+    return (
+        <Diagram
+            data={data}
+            title="Shear Diagram"
+            yRange={20}
+            width={width}
+            yUnit="kN"
+            xUnit="m"
+        />
+    );
 }

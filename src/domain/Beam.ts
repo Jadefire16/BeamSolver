@@ -15,6 +15,14 @@ export function validateBeam(beam: Beam):  string[]
         errors.push("Beam length must be greater than zero");
     }
 
+    if(beam.sampleCount < 1) {
+        errors.push("Sample count must be at least 1");
+    }
+
+    if(beam.sampleCount > 1000) {
+        errors.push("Sample count is too high (max 1000)");
+    }
+
     if(beam.supports.length === 0){
         errors.push("Beam must have at least one support");
     }

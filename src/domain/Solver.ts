@@ -1,7 +1,5 @@
 import { Beam, BeamSampleResult, Sample} from "./Types";
 
-const SAMPLE_COUNT = 50; // likely should make this variable later to allow the user to adjust accuracy
-
 // Solver should remain pure, no artifacting based on state and deterministic (data integrity is most important here)
 // No mutations
 // No UI coupling, pure logic
@@ -17,10 +15,10 @@ const SAMPLE_COUNT = 50; // likely should make this variable later to allow the 
 
 
 // Sample evenly space positions from 0 to length
-function samplePositions(length : number): number[] {
+function samplePositions(length : number, sampleCount: number): number[] {
     const positions: number[] = [];
-    for (let i = 0; i <= SAMPLE_COUNT; i++) {
-        positions.push((i / SAMPLE_COUNT) * length);
+    for (let i = 0; i <= sampleCount; i++) {
+        positions.push((i / sampleCount) * length);
     }
     return positions;
 }
@@ -149,7 +147,7 @@ function computeDeflection(moment: Sample[]): Sample[] {
 }
 
 export function solveBeam(beam: Beam): BeamSampleResult {
-    const positions = samplePositions(beam.length);
+    const positions = samplePositions(beam.length, beam.sampleCount);
 
     const reactions = computeReactions(beam);
     const shearDiagram = computeShear(beam, reactions, positions);

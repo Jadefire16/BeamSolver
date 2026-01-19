@@ -6,6 +6,7 @@ describe('solveBeam', () => {
     it('should calculate reactions correctly for a single support (cantilever)', () => {
         const beam: Beam = {
             length: 10,
+            sampleCount: 50,
             supports: [{ type: SupportType.Fixed, position: 0 }],
             loads: [{ type: LoadType.Point, magnitude: 100, position: 10 }]
         };
@@ -17,6 +18,7 @@ describe('solveBeam', () => {
     it('should calculate reactions correctly for two supports (simply supported beam)', () => {
         const beam: Beam = {
             length: 10,
+            sampleCount: 50,
             supports: [
                 { type: SupportType.Pinned, position: 0 },
                 { type: SupportType.Pinned, position: 10 }
@@ -32,6 +34,7 @@ describe('solveBeam', () => {
     it('should return empty reactions for no supports', () => {
         const beam: Beam = {
             length: 10,
+            sampleCount: 50,
             supports: [],
             loads: [{ type: LoadType.Point, magnitude: 100, position: 5 }]
         };
@@ -42,6 +45,7 @@ describe('solveBeam', () => {
     it('should handle two supports at the same position', () => {
         const beam: Beam = {
             length: 10,
+            sampleCount: 50,
             supports: [
                 { type: SupportType.Pinned, position: 5 },
                 { type: SupportType.Pinned, position: 5 }
@@ -51,5 +55,18 @@ describe('solveBeam', () => {
         const result = solveBeam(beam);
         expect(result.reactions).toHaveLength(2);
         expect(result.reactions[0].force + result.reactions[1].force).toBe(100);
+    });
+
+    it('should respect sampleCount for diagram lengths', () => {
+        const beam: Beam = {
+            length: 10,
+            sampleCount: 10,
+            supports: [{ type: SupportType.Pinned, position: 0 }, { type: SupportType.Pinned, position: 10 }],
+            loads: [{ type: LoadType.Point, magnitude: 100, position: 5 }]
+        };
+        const result = solveBeam(beam);
+        expect(result.shearDiagram).toHaveLength(11); // 0 to 10 inclusive
+        expect(result.momentDiagram).toHaveLength(11);
+        expect(result.deflectionCurve).toHaveLength(11);
     });
 });

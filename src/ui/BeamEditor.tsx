@@ -71,6 +71,28 @@ export function BeamEditor({beam, onChange}: BeamEditorProps) {
         borderRadius: "8px"
     };
 
+    const infoSectionStyle: React.CSSProperties = {
+        marginTop: "32px",
+        borderTop: "1px solid var(--border-color)",
+        paddingTop: "24px",
+    };
+
+    const infoTitleStyle: React.CSSProperties = {
+        marginTop: 0,
+        marginBottom: "12px",
+        fontSize: "1.1rem",
+        color: "var(--text-color)",
+    };
+
+    const infoListStyle: React.CSSProperties = {
+        fontSize: "0.85rem",
+        lineHeight: "1.6",
+        paddingLeft: "20px",
+        margin: "0 0 16px 0",
+        color: "var(--text-color)",
+        opacity: 0.8,
+    };
+
     return (
         <div>
             <h2 style={{ marginTop: 0, marginBottom: "20px" }}>Beam Configuration</h2>
@@ -118,6 +140,25 @@ export function BeamEditor({beam, onChange}: BeamEditorProps) {
                         />
                     </label>
                 </div>
+            </div>
+
+            <div style={infoSectionStyle}>
+                <h3 style={infoTitleStyle}>Mathematical Assumptions</h3>
+                <ul style={infoListStyle}>
+                    <li><strong>Linear Elasticity:</strong> Assumes the material operates within its elastic range and follows Hooke's Law.</li>
+                    <li><strong>Small Deflection Theory:</strong> Uses Euler-Bernoulli theory, which assumes deflections are significantly smaller than the beam length.</li>
+                    <li><strong>Constant Flexural Rigidity:</strong> EI is assumed to be 1.0 throughout the entire length of the beam.</li>
+                    <li><strong>Statically Determinate:</strong> Currently optimized for systems with up to two pinned supports.</li>
+                    <li><strong>Load Type Limitation:</strong> Assumes vertical loads only; no axial forces or torsion are modeled.</li>
+                    <li><strong>Plane Geometry:</strong> Solves a 2D beam problem only; ignores out-of-plane bending, warping, and shear deformation (Euler-Bernoulli).</li>
+                    <li><strong>Boundary Condition Simplification:</strong> Supports are treated as pinned only; no rotational stiffness or fixed-end moments are considered.</li>
+                </ul>
+
+                <h3 style={{ ...infoTitleStyle, marginTop: "16px" }}>Warnings</h3>
+                <ul style={{ ...infoListStyle, marginBottom: 0 }}>
+                    <li><strong>Numerical Accuracy:</strong> Results are derived from numerical integration using {beam.sampleCount} samples; minor inaccuracies may occur near concentrated loads.</li>
+                    <li><strong>Support Limitations:</strong> Only the first two supports are considered in reaction calculations; additional supports are currently ignored.</li>
+                </ul>
             </div>
         </div>
     );

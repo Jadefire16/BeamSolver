@@ -6,6 +6,7 @@ describe('validateBeam', () => {
     it('should return no errors for a valid beam', () => {
         const beam: Beam = {
             length: 10,
+            sampleCount: 50,
             supports: [{ type: SupportType.Pinned, position: 0 }, { type: SupportType.Pinned, position: 10 }],
             loads: [{ type: LoadType.Point, magnitude: 100, position: 5 }]
         };
@@ -13,9 +14,32 @@ describe('validateBeam', () => {
         expect(errors).toHaveLength(0);
     });
 
+    it('should return an error for a beam with sampleCount less than 1', () => {
+        const beam: Beam = {
+            length: 10,
+            sampleCount: 0,
+            supports: [{ type: SupportType.Pinned, position: 0 }],
+            loads: []
+        };
+        const errors = validateBeam(beam);
+        expect(errors).toContain("Sample count must be at least 1");
+    });
+
+    it('should return an error for a beam with sampleCount too high', () => {
+        const beam: Beam = {
+            length: 10,
+            sampleCount: 1001,
+            supports: [{ type: SupportType.Pinned, position: 0 }],
+            loads: []
+        };
+        const errors = validateBeam(beam);
+        expect(errors).toContain("Sample count is too high (max 1000)");
+    });
+
     it('should return an error for a beam with length less than or equal to 0', () => {
         const beam: Beam = {
             length: 0,
+            sampleCount: 50,
             supports: [{ type: SupportType.Pinned, position: 0 }],
             loads: []
         };
@@ -26,6 +50,7 @@ describe('validateBeam', () => {
     it('should return an error for a beam without a support', () => {
         const beam: Beam = {
             length: 10,
+            sampleCount: 50,
             supports: [],
             loads: [{ type: LoadType.Point, magnitude: 100, position: 5 }]
         };
@@ -36,6 +61,7 @@ describe('validateBeam', () => {
     it('should return an error for a support outside the beam length', () => {
         const beam: Beam = {
             length: 10,
+            sampleCount: 50,
             supports: [{ type: SupportType.Pinned, position: 11 }],
             loads: []
         };
@@ -46,6 +72,7 @@ describe('validateBeam', () => {
     it('should return an error for a support at negative position', () => {
         const beam: Beam = {
             length: 10,
+            sampleCount: 50,
             supports: [{ type: SupportType.Pinned, position: -1 }],
             loads: []
         };
@@ -56,6 +83,7 @@ describe('validateBeam', () => {
     it('should return an error for a load outside the beam length', () => {
         const beam: Beam = {
             length: 10,
+            sampleCount: 50,
             supports: [{ type: SupportType.Pinned, position: 0 }],
             loads: [{ type: LoadType.Point, magnitude: 100, position: 12 }]
         };
@@ -66,6 +94,7 @@ describe('validateBeam', () => {
     it('should return an error for a load at negative position', () => {
         const beam: Beam = {
             length: 10,
+            sampleCount: 50,
             supports: [{ type: SupportType.Pinned, position: 0 }],
             loads: [{ type: LoadType.Point, magnitude: 100, position: -1 }]
         };
@@ -76,6 +105,7 @@ describe('validateBeam', () => {
     it('should accumulate multiple errors', () => {
         const beam: Beam = {
             length: -1,
+            sampleCount: 50,
             supports: [],
             loads: [{ type: LoadType.Point, magnitude: 100, position: 5 }]
         };
@@ -90,6 +120,7 @@ describe('validateBeam', () => {
         it('should sort supports and loads by position', () => {
             const beam: Beam = {
                 length: 10,
+                sampleCount: 50,
                 supports: [
                     { type: SupportType.Pinned, position: 10 },
                     { type: SupportType.Pinned, position: 0 }

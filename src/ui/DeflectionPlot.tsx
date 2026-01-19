@@ -7,5 +7,13 @@ export interface DeflectionPlotProps {
 }
 
 export function DeflectionPlot({ data, width }: DeflectionPlotProps) {
-    return <Diagram data={data} title="Deflection Curve" width={width} />;
+    return (
+        <Diagram
+            data={data}
+            title="Deflection Curve"
+            width={width}
+            yUnit="m"
+            xUnit="m"
+        />
+    );
 }

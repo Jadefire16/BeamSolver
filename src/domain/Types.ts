@@ -33,6 +33,7 @@ export interface Load {
 // Beam
 export interface Beam {
     length: number;
+    sampleCount: number;
     supports: Support[];
     loads: Load[];
 }

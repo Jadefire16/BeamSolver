@@ -6,6 +6,7 @@ import {ShearDiagram} from "../ui/ShearDiagram";
 import {MomentDiagram} from "../ui/MomentDiagram";
 import {DeflectionPlot} from "../ui/DeflectionPlot";
 import {BeamEditor} from "../ui/BeamEditor";
+import {PropertyEditor} from "../ui/PropertyEditor";
 
 const SunIcon = () => (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -40,6 +41,7 @@ export default function App() {
 
     const [beamInput, setBeamInput] = useState<Beam>({
         length: 10,
+        sampleCount: 50,
         supports: [
             { type: SupportType.Pinned, position: 0 },
             { type: SupportType.Pinned, position: 10 },
@@ -166,21 +168,31 @@ export default function App() {
                     <div>No result</div>
                 ) : (
                     <>
-                        <div style={graphContainerStyle}>
-                            <div style={{ textAlign: "center", marginBottom: "20px" }}>
-                                <ShearDiagram data={result.shearDiagram} width={1100} />
+                        <div style={{ display: "flex", gap: "24px", alignItems: "flex-start", flexWrap: "wrap" }}>
+                            <div style={{ flex: "1 1 800px", minWidth: 0 }}>
+                                <div style={graphContainerStyle}>
+                                    <div style={{ textAlign: "center", marginBottom: "20px" }}>
+                                        <ShearDiagram data={result.shearDiagram} width={800} />
+                                    </div>
+                                    <div style={bottomGraphsStyle}>
+                                        <div style={{ flex: 1, minWidth: "380px" }}>
+                                            <MomentDiagram data={result.momentDiagram} width={380} />
+                                        </div>
+                                        <div style={{ flex: 1, minWidth: "380px" }}>
+                                            <DeflectionPlot data={result.deflectionCurve} width={380} />
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div style={bottomGraphsStyle}>
-                                <div style={{ flex: 1, minWidth: "400px" }}>
-                                    <MomentDiagram data={result.momentDiagram} width={540} />
-                                </div>
-                                <div style={{ flex: 1, minWidth: "400px" }}>
-                                    <DeflectionPlot data={result.deflectionCurve} width={540} />
-                                </div>
+
+                            <div style={{ flex: "0 0 300px", minWidth: "300px" }}>
+                                <section style={controlSectionStyle}>
+                                    <PropertyEditor beam={beamInput} onChange={setBeamInput} />
+                                </section>
                             </div>
                         </div>
 
-                        <section style={controlSectionStyle}>
+                        <section style={{ ...controlSectionStyle, marginTop: "24px" }}>
                             <BeamEditor beam={beamInput} onChange={setBeamInput} />
                         </section>
                     </>
