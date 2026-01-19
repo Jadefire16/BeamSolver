@@ -3,6 +3,7 @@ import {prepareBeam} from "../domain/Beam";
 import {useMemo} from "react";
 import {solveBeam} from "../domain/Solver";
 import {ShearDiagram} from "../ui/ShearDiagram";
+import {MomentDiagram} from "../ui/MomentDiagram";
 
 const demoBeam: Beam = {
     length: 10,
@@ -55,13 +56,19 @@ export default function App() {
             </ul>
 
             <h2>Shear Samples (first 5)</h2>
-            <ShearDiagram data={result.shearDiagram} />
+            <pre>{JSON.stringify(result.shearDiagram.slice(0, 5), null, 2)}</pre>
 
             <h2>Moment Samples (first 5)</h2>
             <pre>{JSON.stringify(result.momentDiagram.slice(0, 5), null, 2)}</pre>
 
             <h2>Deflection Samples (first 5)</h2>
             <pre>{JSON.stringify(result.deflectionCurve.slice(0, 5), null, 2)}</pre>
+
+            <h2>Shear Diagram (first 5)</h2>
+            <ShearDiagram data={result.shearDiagram} />
+
+            <h2>Moment Diagram</h2>
+            <MomentDiagram data={result.momentDiagram} />
         </div>
     );
 }
