@@ -139,7 +139,13 @@ function enforceZeroEnds(deflection: Sample[]): Sample[] {
 function computeDeflection(moment: Sample[]): Sample[] {
     const slope = integrate(moment);
     const rawDeflection = integrate(slope);
-    return enforceZeroEnds(rawDeflection);
+    const corrected = enforceZeroEnds(rawDeflection);
+
+    // Flip sign so downward deflection is negative (SVG-friendly)
+    return corrected.map(d => ({
+        x: d.x,
+        value: -d.value,
+    }));
 }
 
 export function solveBeam(beam: Beam): BeamSampleResult {
