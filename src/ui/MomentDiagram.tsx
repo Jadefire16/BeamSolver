@@ -1,10 +1,11 @@
 import { Sample } from "../domain/Types";
 import { Diagram } from "./Diagram";
 
-interface MomentDiagramProps {
+export interface MomentDiagramProps {
     data: Sample[];
+    width?: number;
 }
 
-export function MomentDiagram({ data }: MomentDiagramProps) {
-    return <Diagram data={data} title="Bending Moment Diagram" yRange={50} />;
+export function MomentDiagram({ data, width }: MomentDiagramProps) {
+    return <Diagram data={data} title="Bending Moment Diagram" yRange={50} width={width} />;
 }

@@ -46,48 +46,78 @@ export function BeamEditor({beam, onChange}: BeamEditorProps) {
         });
     }
 
+    const labelStyle: React.CSSProperties = {
+        display: "block",
+        marginBottom: "8px",
+        fontWeight: "bold",
+    };
+
+    const inputStyle: React.CSSProperties = {
+        width: "100%",
+        padding: "8px",
+        marginTop: "4px",
+        borderRadius: "4px",
+        border: "1px solid var(--border-color)",
+        backgroundColor: "var(--bg-color)",
+        color: "var(--text-color)",
+        boxSizing: "border-box"
+    };
+
+    const groupStyle: React.CSSProperties = {
+        flex: 1,
+        minWidth: "200px",
+        padding: "16px",
+        border: "1px solid var(--border-color)",
+        borderRadius: "8px"
+    };
+
     return (
-        <div style={{ marginBottom: 24 }}>
-            <h2>Beam Editor</h2>
+        <div>
+            <h2 style={{ marginTop: 0, marginBottom: "20px" }}>Beam Configuration</h2>
 
-            <div>
-                <label>
-                    Beam Length:
-                    <input
-                        type="number"
-                        value={beam.length}
-                        min={1}
-                        step={1}
-                        onChange={(e) => updateLength(Number(e.target.value))}
-                    />
-                </label>
-            </div>
+            <div style={{ display: "flex", gap: "20px", flexWrap: "wrap" }}>
+                <div style={groupStyle}>
+                    <label style={labelStyle}>
+                        Beam Length (m):
+                        <input
+                            type="number"
+                            style={inputStyle}
+                            value={beam.length}
+                            min={1}
+                            step={1}
+                            onChange={(e) => updateLength(Number(e.target.value))}
+                        />
+                    </label>
+                </div>
 
-            <div>
-                <label>
-                    Load Position:
-                    <input
-                        type="range"
-                        min={0}
-                        max={beam.length}
-                        step={0.1}
-                        value={load.position}
-                        onChange={(e) => updateLoadPosition(Number(e.target.value))}
-                    />
-                    {load.position.toFixed(2)}
-                </label>
-            </div>
+                <div style={groupStyle}>
+                    <label style={labelStyle}>
+                        Load Position (0 to {beam.length}m):
+                        <input
+                            type="range"
+                            min={0}
+                            max={beam.length}
+                            step={0.1}
+                            style={{ ...inputStyle, padding: "0" }}
+                            value={load.position}
+                            onChange={(e) => updateLoadPosition(Number(e.target.value))}
+                        />
+                        <div style={{ textAlign: "right", fontSize: "0.9rem" }}>{load.position.toFixed(2)} m</div>
+                    </label>
+                </div>
 
-            <div>
-                <label>
-                    Load Magnitude:
-                    <input
-                        type="number"
-                        value={load.magnitude}
-                        step={1}
-                        onChange={(e) => updateLoadMagnitude(Number(e.target.value))}
-                    />
-                </label>
+                <div style={groupStyle}>
+                    <label style={labelStyle}>
+                        Load Magnitude (kN):
+                        <input
+                            type="number"
+                            style={inputStyle}
+                            value={load.magnitude}
+                            step={1}
+                            onChange={(e) => updateLoadMagnitude(Number(e.target.value))}
+                        />
+                    </label>
+                </div>
             </div>
         </div>
     );
