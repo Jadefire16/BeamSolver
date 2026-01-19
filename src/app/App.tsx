@@ -45,35 +45,20 @@ export default function App() {
     }
 
     return (
-        <div>
-            <h1>2D Beam Analysis Demo</h1>
+        <div style={{ maxWidth: 900, margin: "0 auto", padding: 24 }}>
+          <h1>2D Beam Analysis</h1>
+
+          <section>
             <BeamEditor beam={beamInput} onChange={setBeamInput} />
-            <h2>Support Reactions</h2>
-            <ul>
-                {result.reactions.map((r, i) => (
-                    <li key={i}>
-                        Support at x = {r.support.position}: {r.force.toFixed(2)}
-                    </li>
-                ))}
-            </ul>
+          </section>
 
-            <h2>Shear Samples (first 5)</h2>
-            <pre>{JSON.stringify(result.shearDiagram.slice(0, 5), null, 2)}</pre>
+          <section>
+            <h2>Results</h2>
 
-            <h2>Moment Samples (first 5)</h2>
-            <pre>{JSON.stringify(result.momentDiagram.slice(0, 5), null, 2)}</pre>
-
-            <h2>Deflection Samples (first 5)</h2>
-            <pre>{JSON.stringify(result.deflectionCurve.slice(0, 5), null, 2)}</pre>
-
-            <h2>Shear Diagram (first 5)</h2>
             <ShearDiagram data={result.shearDiagram} />
-
-            <h2>Moment Diagram</h2>
             <MomentDiagram data={result.momentDiagram} />
-
-            <h2>Deflection</h2>
             <DeflectionPlot data={result.deflectionCurve} />
+          </section>
         </div>
     );
 }

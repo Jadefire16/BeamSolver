@@ -6,5 +6,5 @@ interface MomentDiagramProps {
 }
 
 export function MomentDiagram({ data }: MomentDiagramProps) {
-    return <Diagram data={data} title="Bending Moment Diagram" />;
+    return <Diagram data={data} title="Bending Moment Diagram" yRange={50} />;
 }

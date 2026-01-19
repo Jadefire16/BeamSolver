@@ -6,5 +6,5 @@ interface DeflectionPlotProps {
 }
 
 export function DeflectionPlot({ data }: DeflectionPlotProps) {
-  return <Diagram data={data} title="Deflection Curve" />;
+  return <Diagram data={data} title="Deflection Curve" yRange={5}/>;
 }

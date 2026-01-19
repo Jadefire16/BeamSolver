@@ -7,6 +7,7 @@ interface DiagramProps {
     width?: number;
     height?: number;
     title?: string;
+    yRange?: number;
 }
 
 // generic plotting component so all diagrams can share the same scaling and rendering logic.
@@ -15,6 +16,7 @@ export function Diagram({
     width = 600,
     height = 200,
     title,
+    yRange,
 }: DiagramProps) {
     if (data.length === 0)
         return null;
@@ -26,8 +28,13 @@ export function Diagram({
 
     const minX = Math.min(...xs);
     const maxX = Math.max(...xs);
-    const minY = Math.min(...ys);
-    const maxY = Math.max(...ys);
+
+    const computedMax = Math.max(...ys.map(y => Math.abs(y)));
+    const maxAbsY = yRange ?? (computedMax === 0 ? 1 : computedMax);
+
+    const minY = -maxAbsY;
+    const maxY = maxAbsY;
+
 
     const scaleX = (x: number) =>
         padding +
