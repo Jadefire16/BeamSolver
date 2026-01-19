@@ -33,3 +33,34 @@ export function validateBeam(beam: Beam):  string[]
 
     return errors; // Accumulate errors and return all, instead of just returning a single error
 }
+
+
+// Sort beam to ensure predictability when solving.
+export function normalizeBeam(beam: Beam): Beam {
+    return {
+        ...beam,
+        supports: [...beam.supports].sort(
+            (a : Support, b : Support) => a.position - b.position
+        ),
+        loads: [...beam.loads].sort(
+            (a: Load, b: Load) => a.position - b.position
+        ),
+    };
+}
+
+//
+export function prepareBeam(beam: Beam): {
+    beam: Beam | null;
+    errors: string[];
+} {
+    const errors = validateBeam(beam);
+
+    if(errors.length > 0) {
+        return { beam: null, errors };
+    }
+
+    return {
+        beam: normalizeBeam(beam),
+        errors: [],
+    };
+}
