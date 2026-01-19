@@ -8,15 +8,11 @@ const SAMPLE_COUNT = 50; // likely should make this variable later to allow the 
 
 // The solver will sample a beam, compute the internal forces acting on the beam and return arrays to plot.
 
-export function solveBeam(beam: Beam): BeamSampleResult
-{
-
-}
 
 // Sample evenly space positions from 0 to length
 function samplePositions(length : number): number[] {
     const positions: number[] = [];
-    for (let i = 0; i < SAMPLE_COUNT; i++) {
+    for (let i = 0; i <= SAMPLE_COUNT; i++) {
         positions.push((i / SAMPLE_COUNT) * length);
     }
     return positions;
@@ -32,15 +28,26 @@ function computeReactions(beam: Beam){
 
     const supports = beam.supports;
 
+    if (supports.length === 0) {
+        return [];
+    }
+
     if(supports.length === 1) {
         return [
-            { support: supports[0] }, { force: totalLoad }
+            { support: supports[0], force: totalLoad }
         ];
     }
 
     const [left, right] = supports;
 
     const span = right.position - left.position;
+
+    if (span === 0) {
+        return [
+            { support: left, force: totalLoad / 2 },
+            { support: right, force: totalLoad / 2 },
+        ];
+    }
 
     const leftReaction = beam.loads.reduce((sum, load) => {
        const a = right.position - load.position;
@@ -80,3 +87,47 @@ function computeShear(
     });
 }
 
+// Simple moment computation function, tldr integral of shear
+function computeMoment(shear: Sample[]): Sample[] {
+    const moment: Sample[] = [];
+    let currentMoment = 0;
+
+    for (let i = 0; i < shear.length; i++) {
+        if(i > 0) {
+            const dx = shear[i].x - shear[i - 1].x;
+            currentMoment += shear[i - 1].value * dx;
+        }
+
+        moment.push({
+            x: shear[i].x,
+            value: currentMoment,
+        });
+    }
+    return moment;
+}
+
+// This doesn't really calculate deflection, it's pretty flawed, but it's okay for now
+function computeDeflection(moment: Sample[]): Sample[]{
+    const SCALE = 0.001;
+    return moment.map((m) => ({
+        x: m.x,
+            value: m.value * SCALE,
+    }));
+}
+
+export function solveBeam(beam: Beam): BeamSampleResult {
+    const positions = samplePositions(beam.length);
+
+    const reactions = computeReactions(beam);
+    const shearDiagram = computeShear(beam, reactions, positions);
+    const momentDiagram = computeMoment(shearDiagram);
+    const deflectionCurve = computeDeflection(momentDiagram);
+
+    return {
+        reactions,
+        shearDiagram,
+        momentDiagram,
+        deflectionCurve
+    }
+
+}
