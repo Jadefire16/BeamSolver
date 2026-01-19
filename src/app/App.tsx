@@ -1,24 +1,25 @@
 import {Beam, LoadType, SupportType} from "../domain/Types";
 import {prepareBeam} from "../domain/Beam";
-import {useMemo} from "react";
+import {useMemo, useState} from "react";
 import {solveBeam} from "../domain/Solver";
 import {ShearDiagram} from "../ui/ShearDiagram";
 import {MomentDiagram} from "../ui/MomentDiagram";
 import {DeflectionPlot} from "../ui/DeflectionPlot";
-
-const demoBeam: Beam = {
-    length: 10,
-    supports: [
-        { type: SupportType.Pinned, position: 0 },
-        { type: SupportType.Pinned, position: 10},
-    ],
-    loads: [
-        { type: LoadType.Point, magnitude: 10, position: 5 },
-    ],
-};
+import {BeamEditor} from "../ui/BeamEditor";
 
 export default function App() {
-    const { beam, errors } = prepareBeam(demoBeam);
+    const [beamInput, setBeamInput] = useState<Beam>({
+        length: 10,
+        supports: [
+            { type: SupportType.Pinned, position: 0 },
+            { type: SupportType.Pinned, position: 10 },
+        ],
+        loads: [
+            { type: LoadType.Point, magnitude: 10, position: 5 },
+        ],
+    });
+
+    const { beam, errors } = prepareBeam(beamInput);
 
     const result = useMemo(() => {
         if (!beam)
@@ -33,7 +34,7 @@ export default function App() {
                 <h2>Beam Errors</h2>
                 <ul>
                     {errors.map((e, i) => (
-                    <li key={i}>{e}</li>))}
+                        <li key={i}>{e}</li>))}
                 </ul>
             </div>
         );
@@ -46,7 +47,7 @@ export default function App() {
     return (
         <div>
             <h1>2D Beam Analysis Demo</h1>
-
+            <BeamEditor beam={beamInput} onChange={setBeamInput} />
             <h2>Support Reactions</h2>
             <ul>
                 {result.reactions.map((r, i) => (
