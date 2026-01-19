@@ -38,6 +38,9 @@ export function Diagram({
         padding -
         ((y - minY) / (maxY - minY || 1)) * (height - 2 * padding);
 
+    const hasZeroLine = minY < 0 && maxY > 0;
+    const zeroY = hasZeroLine ? scaleY(0) : null;
+
     const points = data
         .map((d) => `${scaleX(d.x)},${scaleY(d.value)}`)
         .join(" ");
@@ -61,6 +64,18 @@ export function Diagram({
                     y2={height - padding}
                     stroke="#999"
                 />
+
+                {/* Zero reference line */}
+                {hasZeroLine && zeroY !== null && (
+                    <line
+                        x1={padding}
+                        y1={zeroY}
+                        x2={width - padding}
+                        y2={zeroY}
+                        stroke="#ccc"
+                        strokeDasharray="4"
+                    />
+                )}
 
                 {/* Data line */}
                 <polyline

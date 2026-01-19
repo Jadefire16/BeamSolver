@@ -4,6 +4,7 @@ import {useMemo} from "react";
 import {solveBeam} from "../domain/Solver";
 import {ShearDiagram} from "../ui/ShearDiagram";
 import {MomentDiagram} from "../ui/MomentDiagram";
+import {DeflectionPlot} from "../ui/DeflectionPlot";
 
 const demoBeam: Beam = {
     length: 10,
@@ -69,6 +70,9 @@ export default function App() {
 
             <h2>Moment Diagram</h2>
             <MomentDiagram data={result.momentDiagram} />
+
+            <h2>Deflection</h2>
+            <DeflectionPlot data={result.deflectionCurve} />
         </div>
     );
 }
