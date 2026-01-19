@@ -1,24 +1,37 @@
-/tmp
-/out-tsc
-
-/node_modules
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+# Dependencies
+node_modules/
+/dist
 /.pnp
 .pnp.js
 
-.vscode/*
+# Testing
+/coverage
+*.lcov
 
-# IDEs
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# IDEs and Tools
+.vscode/*
+!.vscode/extensions.json
 .idea/
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Vite/Vitest
+dist/
+dist-ssr/
+*.local
 
 # AI stuff
 .cursor/
 .windsurf/
 .claude/
 .copilot/
-
-# OS files
-.DS_Store
-Thumbs.db
