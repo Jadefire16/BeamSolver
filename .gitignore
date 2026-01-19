@@ -9,3 +9,16 @@ yarn-error.log*
 .pnp.js
 
 .vscode/*
+
+# IDEs
+.idea/
+
+# AI stuff
+.cursor/
+.windsurf/
+.claude/
+.copilot/
+
+# OS files
+.DS_Store
+Thumbs.db
