@@ -36,3 +36,16 @@ export interface Beam {
     support: Support[];
     loads: Load[];
 }
+
+// Define output result, will constrain UI and Solver to follow
+
+export interface BeamSampleResult {
+    reactions: {
+        support: Support;
+        force: number;
+    }[];
+
+    shearDiagram: Sample[];
+    momentDiagram: Sample[];
+    deflectionCurve: Sample[];
+}
