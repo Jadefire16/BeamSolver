@@ -7,6 +7,7 @@ import {MomentDiagram} from "../ui/MomentDiagram";
 import {DeflectionPlot} from "../ui/DeflectionPlot";
 import {BeamEditor} from "../ui/BeamEditor";
 import {PropertyEditor} from "../ui/PropertyEditor";
+import {ForceUnit, LengthUnit, UnitSettings} from "../domain/Units";
 
 const SunIcon = () => (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -30,6 +31,10 @@ const MoonIcon = () => (
 
 export default function App() {
     const [darkMode, setDarkMode] = useState(true);
+    const [units, setUnits] = useState<UnitSettings>({
+        length: LengthUnit.Meters,
+        force: ForceUnit.KiloNewtons,
+    });
 
     useEffect(() => {
         if (darkMode) {
@@ -114,8 +119,9 @@ export default function App() {
         <div style={appStyle}>
             <header style={appBarStyle}>
                 <h1 style={{ margin: 0, fontSize: "1.5rem" }}>2D Beam Analysis</h1>
-                <button 
-                    onClick={toggleDarkMode}
+                <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
+                    <button 
+                        onClick={toggleDarkMode}
                     style={{
                         padding: "8px",
                         cursor: "pointer",
@@ -132,6 +138,7 @@ export default function App() {
                 >
                     {darkMode ? <SunIcon /> : <MoonIcon />}
                 </button>
+                </div>
             </header>
 
             <main style={mainStyle}>
@@ -172,14 +179,14 @@ export default function App() {
                             <div style={{ flex: "1 1 800px", minWidth: 0 }}>
                                 <div style={graphContainerStyle}>
                                     <div style={{ textAlign: "center", marginBottom: "20px" }}>
-                                        <ShearDiagram data={result.shearDiagram} width={800} />
+                                        <ShearDiagram data={result.shearDiagram} width={800} units={units} />
                                     </div>
                                     <div style={bottomGraphsStyle}>
                                         <div style={{ flex: 1, minWidth: "380px" }}>
-                                            <MomentDiagram data={result.momentDiagram} width={380} />
+                                            <MomentDiagram data={result.momentDiagram} width={380} units={units} />
                                         </div>
                                         <div style={{ flex: 1, minWidth: "380px" }}>
-                                            <DeflectionPlot data={result.deflectionCurve} width={380} />
+                                            <DeflectionPlot data={result.deflectionCurve} width={380} units={units} />
                                         </div>
                                     </div>
                                 </div>
@@ -187,13 +194,18 @@ export default function App() {
 
                             <div style={{ flex: "0 0 300px", minWidth: "300px" }}>
                                 <section style={controlSectionStyle}>
-                                    <PropertyEditor beam={beamInput} onChange={setBeamInput} />
+                                    <PropertyEditor 
+                                        beam={beamInput} 
+                                        onChange={setBeamInput} 
+                                        units={units}
+                                        onUnitChange={setUnits}
+                                    />
                                 </section>
                             </div>
                         </div>
 
                         <section style={{ ...controlSectionStyle, marginTop: "24px" }}>
-                            <BeamEditor beam={beamInput} onChange={setBeamInput} />
+                            <BeamEditor beam={beamInput} onChange={setBeamInput} units={units} />
                         </section>
                     </>
                 )}

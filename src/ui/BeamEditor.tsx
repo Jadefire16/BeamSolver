@@ -1,4 +1,5 @@
 import {Beam, SupportType} from "../domain/Types";
+import {ForceUnit, LengthUnit, UnitSettings, convertValue, fromUnitToInternal} from "../domain/Units";
 
 // Must ensure BeamEditor can't produce invalid data, clamp values?
 // We'll keep it simple and predictable
@@ -7,13 +8,15 @@ import {Beam, SupportType} from "../domain/Types";
 interface BeamEditorProps {
     beam: Beam;
     onChange: (beam: Beam) => void;
+    units: UnitSettings;
 }
 
-export function BeamEditor({beam, onChange}: BeamEditorProps) {
+export function BeamEditor({beam, onChange, units}: BeamEditorProps) {
     const load = beam.loads[0];
 
     function updateLength(length: number) {
-        const clampedLength = Math.max(1, length);
+        const internalLength = fromUnitToInternal(length, units.length);
+        const clampedLength = Math.max(1, internalLength);
 
         onChange({
             ...beam,
@@ -32,17 +35,19 @@ export function BeamEditor({beam, onChange}: BeamEditorProps) {
     }
 
     function updateLoadPosition(position: number) {
+        const internalPosition = fromUnitToInternal(position, units.length);
         onChange({
             ...beam,
             loads: [
-                { ...load, position }
+                { ...load, position: internalPosition }
             ],
         });
     }
     function updateLoadMagnitude(magnitude: number) {
+        const internalMagnitude = fromUnitToInternal(magnitude, units.force);
         onChange({
             ...beam,
-            loads: [{ ...load, magnitude }],
+            loads: [{ ...load, magnitude: internalMagnitude }],
         });
     }
 
@@ -100,12 +105,12 @@ export function BeamEditor({beam, onChange}: BeamEditorProps) {
             <div style={{ display: "flex", gap: "20px", flexWrap: "wrap" }}>
                 <div style={groupStyle}>
                     <label style={labelStyle}>
-                        Beam Length (m):
+                        Beam Length ({units.length}):
                         <input
                             type="number"
                             style={inputStyle}
-                            value={beam.length}
-                            min={1}
+                            value={convertValue(beam.length, units.length)}
+                            min={convertValue(1, units.length)}
                             step={1}
                             onChange={(e) => updateLength(Number(e.target.value))}
                         />
@@ -114,27 +119,27 @@ export function BeamEditor({beam, onChange}: BeamEditorProps) {
 
                 <div style={groupStyle}>
                     <label style={labelStyle}>
-                        Load Position (0 to {beam.length}m):
+                        Load Position (0 to {convertValue(beam.length, units.length)}{units.length}):
                         <input
                             type="range"
                             min={0}
-                            max={beam.length}
-                            step={0.1}
+                            max={convertValue(beam.length, units.length)}
+                            step={0.01}
                             style={{ ...inputStyle, padding: "0" }}
-                            value={load.position}
+                            value={convertValue(load.position, units.length)}
                             onChange={(e) => updateLoadPosition(Number(e.target.value))}
                         />
-                        <div style={{ textAlign: "right", fontSize: "0.9rem" }}>{load.position.toFixed(2)} m</div>
+                        <div style={{ textAlign: "right", fontSize: "0.9rem" }}>{convertValue(load.position, units.length).toFixed(2)} {units.length}</div>
                     </label>
                 </div>
 
                 <div style={groupStyle}>
                     <label style={labelStyle}>
-                        Load Magnitude (kN):
+                        Load Magnitude ({units.force}):
                         <input
                             type="number"
                             style={inputStyle}
-                            value={load.magnitude}
+                            value={convertValue(load.magnitude, units.force)}
                             step={1}
                             onChange={(e) => updateLoadMagnitude(Number(e.target.value))}
                         />
